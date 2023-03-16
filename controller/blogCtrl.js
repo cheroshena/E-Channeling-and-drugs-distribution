@@ -58,7 +58,7 @@ const getAllBlogs = asyncHandler (async (req, res) =>{
     }catch(error) {
         throw new Error(error);
     }
-})
+});
 
 //Delete Blog
 const deleteBlog = asyncHandler(async(req, res) => {
