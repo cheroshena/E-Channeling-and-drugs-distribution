@@ -1,6 +1,10 @@
+const mongoose = require('mongoose');
 const Doctor = require("../models/doctorModel");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const asyncHandler = require("express-async-handler");
+
+const User = require("../models/userModel");
+
 
 
 //Create Doctor
@@ -63,6 +67,9 @@ const getDoctor = asyncHandler( async ( req,res ) => {
         throw new Error ( error );
     }
 });
+
+
+
 
 
 module.exports = { createDoctor, getAllDoctors, updateDoctor, deleteDoctor, getDoctor};
