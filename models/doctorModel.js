@@ -14,10 +14,7 @@ var doctorSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    img:{
-        type:Array,
-        required:true,
-    },
+    images:[],
     docratings: [{
         star:Number,
         comment:String,
