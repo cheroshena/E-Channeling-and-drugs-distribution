@@ -3,6 +3,14 @@ const Product = require("../models/productModel");
 const Cart = require("../models/cartModel");
 const Coupon = require("../models/couponModel");
 const Order = require("../models/orderModel");
+const SelectDoc = require('../models/selectDocModel');
+const Channel = require('../models/channelDocModel');
+const Doctor = require('../models/doctorModel');
+
+
+
+
+
 const uniqid = require('uniqid'); 
 const asyncHandler = require ("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
@@ -338,7 +346,7 @@ const getWishlist = asyncHandler (async (req, res) => {
     }
 });
 
-//User Cart
+//User Add to Cart
 const userCart = asyncHandler(async(req, res) => {
     const {cart} = req.body;
     
@@ -479,6 +487,7 @@ const getOrders = asyncHandler(async(req, res) => {
     }
 });
 
+//Update Order 
 const updateOrderStatus = asyncHandler(async(req,res)=>{
     const {status} = req.body;
     const {id} =req.params;
@@ -501,6 +510,144 @@ const updateOrderStatus = asyncHandler(async(req,res)=>{
 
 });
 
+//User Choose doctor for channeling
+const chooseDoc = asyncHandler(async(req, res) => {
+    const {chodos} = req.body;
+    
+    const {_id} = req.user;
+    
+    validateMongoDbId(_id);
+    try{
+        let doctors=[]
+        const user = await User.findById(_id);
+        //check if user already have product in cart
+        const alreadyExistCart = await SelectDoc.findOne({orderby:user._id});
+        if(alreadyExistCart){
+            alreadyExistCart.remove();
+        }
+        for (let i =0; i < chodos.length; i++) {
+            let object = {};
+            object.doctor = chodos[i]._id;
+            object.count = chodos[i].count;
+            
+            
+            doctors.push(object);
+        }
+        
+       
+        let newChodos = await new SelectDoc({
+            doctors,
+            
+            orderby: user?._id,
+        }).save();
+        res.json(newChodos);
+    }
+    catch(error){
+        throw new Error(error);
+    }
+});
+
+//Get channel and View 
+const getUserChannel = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const chodos = await SelectDoc.findOne({orderby:_id}).populate("doctors.doctor");
+        res.json(chodos);
+    }catch(error){
+        throw new Error(error);
+    }
+});
+
+//Empty Channel
+const emptyChannel = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const user = await User.findOne({_id});
+        const chodos = await SelectDoc.findOneAndRemove({orderby:user._id})
+        res.json(chodos);
+    }catch(error){
+        throw new Error(error);
+    }
+});
+
+//Create Channel
+const createChannel = asyncHandler (async (req, res) => {
+    const {COD} = req.body;
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    
+    try{
+        if (!COD) throw new Error ("Your channeling faild"); 
+        const user = await User.findById(_id);
+        let userChannel =await SelectDoc.findOne({orderby:user._id});
+
+        let newOrder = await new Channel( {
+            doctors:userChannel.doctors,
+            paymentIntent:{
+                id: uniqid(),
+                method:"COD",
+                
+                status:"Processing",
+                created:Date.now(),
+                
+            },
+            orderby: user._id,
+            orderStatus:"Processing",
+        } ).save();
+        let update = userChannel.doctors.map( ( item ) => {
+            return{
+                updateOne:{
+                    filter:{ _id: item.doctor._id },
+                    update:{ $inc: { quantity: -item.count, sold: +item.count } },
+                },
+            };
+        });
+        const updated = await Doctor.bulkWrite(update, {});
+        res.json({message:"success"});
+        
+
+    }catch (error){
+        throw new Error(error);
+    }
+});
+
+//Get Channel List
+const getChannelList = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const userchannels = await Channel.findOne({orderby:_id}).populate("doctors.doctor").exec();
+        res.json(userchannels);
+        
+    }catch (error){
+        throw new Error(error);
+    }
+});
+
+//Update Channeling Status 
+const updateChannelingStatus = asyncHandler(async(req,res)=>{
+    const {status} = req.body;
+    const {id} =req.params;
+    validateMongoDbId(id);
+    try{
+        const updateChannelingStatus = await Channel.findByIdAndUpdate(
+            id,
+            {
+                orderStatus:status,
+                paymentIntent:{
+                    status:status,
+                },
+            },
+            {new:true}
+            ); 
+            res.json(updateChannelingStatus);
+    }catch (error){
+        throw new Error(error);
+    }
+
+});
 
 module.exports = {
     createUser, 
@@ -526,4 +673,10 @@ module.exports = {
     createOrder,
     getOrders,
     updateOrderStatus,
+    chooseDoc,
+    getUserChannel,
+    emptyChannel,
+    createChannel,
+    getChannelList,
+    updateChannelingStatus,
 };

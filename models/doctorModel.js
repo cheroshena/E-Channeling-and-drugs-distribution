@@ -14,6 +14,15 @@ var doctorSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    quantity:{
+        type:Number,
+        required:true,
+    },
+    sold:{
+        type:Number,
+        default:0,
+
+    },
     images:[],
     docratings: [{
         star:Number,
