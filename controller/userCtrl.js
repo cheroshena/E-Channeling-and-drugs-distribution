@@ -582,19 +582,21 @@ const createChannel = asyncHandler (async (req, res) => {
         if (!COD) throw new Error ("Your channeling faild"); 
         const user = await User.findById(_id);
         let userChannel =await SelectDoc.findOne({orderby:user._id});
+        
 
         let newOrder = await new Channel( {
             doctors:userChannel.doctors,
             paymentIntent:{
                 id: uniqid(),
                 method:"COD",
-                
+                channelingNo:"Processing",
                 status:"Processing",
                 created:Date.now(),
                 
             },
             orderby: user._id,
             orderStatus:"Processing",
+            channelNo:"Processing",
         } ).save();
         let update = userChannel.doctors.map( ( item ) => {
             return{
@@ -628,7 +630,7 @@ const getChannelList = asyncHandler(async(req, res) => {
 
 //Update Channeling Status 
 const updateChannelingStatus = asyncHandler(async(req,res)=>{
-    const {status} = req.body;
+    const {status,channelingNo} = req.body;
     const {id} =req.params;
     validateMongoDbId(id);
     try{
@@ -636,8 +638,10 @@ const updateChannelingStatus = asyncHandler(async(req,res)=>{
             id,
             {
                 orderStatus:status,
+                channelNo:channelingNo,
                 paymentIntent:{
                     status:status,
+                    channelingNo:channelingNo,
                 },
             },
             {new:true}
