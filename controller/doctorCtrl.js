@@ -20,13 +20,13 @@ const createDoctor = asyncHandler(async(req, res) => {
 
 //get all Doctor
 const getAllDoctors = asyncHandler (async (req, res) =>{
-    try{
-        const alldoctors = await Doctor.find();
-        res.json(alldoctors);
+  try{
+      const getDoctors = await Doctor.find();
+      res.json(getDoctors);
 
-    }catch(error) {
-        throw new Error(error);
-    }
+  }catch(error) {
+      throw new Error(error);
+  }
 });
 
 //Update Doctor

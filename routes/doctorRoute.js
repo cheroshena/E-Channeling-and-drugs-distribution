@@ -9,6 +9,7 @@ const router = express.Router();
 
 
 router.post("/", authMiddleware, isAdmin, createDoctor);
+router.get("/", getAllDoctors);
 router.put(
     "/upload/:id",
     authMiddleware,
@@ -16,7 +17,7 @@ router.put(
     uploadPhoto.array("images",2),
     doctorImgResize,
     uploadImages);
-router.get("/", authMiddleware, isAdmin, getAllDoctors);
+
 router.put("/rating", authMiddleware, docrating)
 router.put("/:id", authMiddleware, isAdmin, updateDoctor);
 router.delete("/:id", authMiddleware, isAdmin, deleteDoctor);
