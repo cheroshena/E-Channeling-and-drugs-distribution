@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const productRouter = require("./routes/productRoute");
 const doctorRouter = require("./routes/doctorRoute");
 const blogRouter = require("./routes/blogRoute");
+const prescriptionRouter = require("./routes/prescriptionRoute")
 const categoryRouter = require("./routes/prodcategoryRoute");
 const blogcategoryRouter = require("./routes/blogCatRoute");
 const brandRouter = require("./routes/brandRoute");
@@ -32,6 +33,7 @@ app.use("/api/category",categoryRouter);
 app.use("/api/blogcategory",blogcategoryRouter);
 app.use("/api/brand",brandRouter);
 app.use("/api/coupon", couponRouter);
+app.use("/api/prescription",prescriptionRouter);
 
 app.use(notFound);
 app.use(errorHandler);

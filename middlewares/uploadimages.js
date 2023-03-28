@@ -87,5 +87,23 @@ const blogImgResize = async (req, res, next) => {
    next();
 };
 
+//Prescription
+const prescImgResize = async (req, res, next) => {
+    if (!req.files) return next();
+    await Promise.all(
+        req.files.map(async (file) => {
+        await sharp(file.path)
+        .resize(300,300)
+        .toFormat("jpeg")
+        .jpeg({quality:90})
+        .toFile(`public/images/prescriptions/${file.filename}`);
+        fs.unlinkSync(`public/images/prescriptions/${file.filename}`);
 
-module.exports = {uploadPhoto, productImgResize, doctorImgResize, blogImgResize};
+    })
+   );
+   next();
+};
+
+
+
+module.exports = {uploadPhoto, productImgResize, doctorImgResize, blogImgResize , prescImgResize};

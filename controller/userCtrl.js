@@ -6,8 +6,9 @@ const Order = require("../models/orderModel");
 const SelectDoc = require('../models/selectDocModel');
 const Channel = require('../models/channelDocModel');
 const Doctor = require('../models/doctorModel');
-
-
+const CartPresc = require("../models/cartPrecsModel");
+const OrderPresc = require("../models/orderPrescModel");
+const Prescription = require("../models/prescriptionModel")
 
 
 
@@ -653,6 +654,148 @@ const updateChannelingStatus = asyncHandler(async(req,res)=>{
 
 });
 
+
+//user add to cart his prescription
+const userprescCart = asyncHandler(async(req, res) => {
+    const {cartpresc} = req.body;
+    
+    const {_id} = req.user;
+    
+    validateMongoDbId(_id);
+    try{
+        let prescriptions=[]
+        const user = await User.findById(_id);
+        //check if user already have product in cart
+        const alreadyExistCart = await CartPresc.findOne({orderby:user._id});
+        if(alreadyExistCart){
+            alreadyExistCart.remove();
+        }
+        for (let i =0; i < cartpresc.length; i++) {
+            let object = {};
+            object.prescription = cartpresc[i]._id;
+            object.count = cartpresc[i].count;
+            prescriptions.push(object);
+        }
+        let newCart = await new CartPresc({
+            prescriptions,
+           
+            orderby: user?._id,
+        }).save();
+        res.json(newCart);
+    }
+    catch(error){
+        throw new Error(error);
+    }
+});
+
+//Get User Prescription Cart
+const getUserPrescCart = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const prescriptioncart = await CartPresc.findOne({orderby:_id}).populate("prescriptions.prescription");
+        res.json(prescriptioncart);
+    }catch(error){
+        throw new Error(error);
+    }
+});
+
+//Empty Prescription Cart
+const emptyPrescCart = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const user = await User.findOne({_id});
+        const prescriptioncart = await CartPresc.findOneAndRemove({orderby:user._id})
+        res.json(prescriptioncart);
+    }catch(error){
+        throw new Error(error);
+    }
+});
+
+//create Prescription Order
+const createPrescOrder = asyncHandler (async (req, res) => {
+    const {COD} = req.body;
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    
+    try{
+        if (!COD) throw new Error ("Your Prescription Order faild"); 
+        const user = await User.findById(_id);
+        let userPrescCart =await CartPresc.findOne({orderby:user._id});
+        
+
+        let newOrder = await new OrderPresc( {
+            prescriptions:userPrescCart.prescriptions,
+            paymentIntent:{
+                id: uniqid(),
+                method:"COD",
+                
+                status:"Processing",
+                created:Date.now(),
+                
+            },
+            orderby: user._id,
+            orderStatus:"Processing",
+            
+        } ).save();
+        let update = userPrescCart.prescriptions.map( ( item ) => {
+            return{
+                updateOne:{
+                    filter:{ _id: item.prescription._id },
+                    update:{ $inc: { quantity: -item.count, sold: +item.count } },
+                },
+            };
+        });
+        const updated = await Prescription.bulkWrite(update, {});
+        res.json({message:"success"});
+        
+
+    }catch (error){
+        throw new Error(error);
+    }
+});
+
+//Get Order List
+const  getPrescOrders = asyncHandler(async(req, res) => {
+    const {_id} = req.user;
+    validateMongoDbId(_id);
+    try{
+        const userprescorders = await OrderPresc.findOne({orderby:_id}).populate({
+            path: "prescriptions.prescription",
+            model: "Prescription",
+          })
+          .exec();
+        res.json(userprescorders);
+        
+    }catch (error){
+        throw new Error(error);
+    }
+});
+
+//Update Order 
+const updatePrescOrderStatus = asyncHandler(async(req,res)=>{
+    const {status} = req.body;
+    const {id} =req.params;
+    validateMongoDbId(id);
+    try{
+        const updateOrderStatus = await OrderPresc.findByIdAndUpdate(
+            id,
+            {
+                orderStatus:status,
+                paymentIntent:{
+                    status:status,
+                },
+            },
+            {new:true}
+            ); 
+            res.json(updateOrderStatus);
+    }catch (error){
+        throw new Error(error);
+    }
+
+});
+
 module.exports = {
     createUser, 
     loginUserCtrl , 
@@ -683,4 +826,10 @@ module.exports = {
     createChannel,
     getChannelList,
     updateChannelingStatus,
+    userprescCart,
+    getUserPrescCart,
+    emptyPrescCart,
+    createPrescOrder,
+    getPrescOrders,
+    updatePrescOrderStatus,
 };
