@@ -256,7 +256,7 @@ const uploadImages = asyncHandler(async(req,res) => {
   }
 });
 
-//Upload Product Img
+//Delete Product Img
 const deleteImages = asyncHandler(async(req,res) => {
   const {id} = req.params;
   try{

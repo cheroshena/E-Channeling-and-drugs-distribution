@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Doctor = require("../models/doctorModel");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const asyncHandler = require("express-async-handler");
-const cloudinaryUploadImg = require("../utils/cloudinary");
+const {cloudinaryUploadImg,cloudinaryDeleteImg} = require("../utils/cloudinary");
 const User = require("../models/userModel");
 const fs = require("fs");
 
@@ -122,12 +122,10 @@ const docrating = asyncHandler(async (req, res) => {
     } catch (error) {
       throw new Error(error);
     }
-  });
+});
   
-  //upload doctor img
-  const uploadImages = asyncHandler(async(req,res) => {
-    const {id} = req.params;
-    validateMongoDbId(id);
+//Upload Doctor Img
+const uploadDocImages = asyncHandler(async(req,res) => {
     try{
       const uploader = (path) => cloudinaryUploadImg(path,"images");
       const urls = [];
@@ -138,15 +136,24 @@ const docrating = asyncHandler(async (req, res) => {
         urls.push(newpath);
         fs.unlinkSync(path);
       }
-      const findDoctor =await Doctor.findByIdAndUpdate(id,{
-        images:urls.map(file => {return file}),
-      },
-      {
-        new:true,
-      }
-    );
-    res.json(findDoctor);
+      const images= urls.map((file) => {
+        return file;
+      });
+      res.json(images);
+      
+    }catch(error) {
+      throw new Error(error);
+    }
+  });
   
+  //Delete Product Img
+  const deleteImages = asyncHandler(async(req,res) => {
+    const {id} = req.params;
+    try{
+      const deleted = cloudinaryDeleteImg(id,"images");
+      res.json({message:"Deleted"});
+      
+      
     }catch(error) {
       throw new Error(error);
     }
@@ -154,4 +161,4 @@ const docrating = asyncHandler(async (req, res) => {
 
 
 
-module.exports = { createDoctor, getAllDoctors, updateDoctor, deleteDoctor, getDoctor, docrating, uploadImages};
+module.exports = { createDoctor, getAllDoctors, updateDoctor, deleteDoctor, getDoctor, docrating, uploadDocImages, deleteImages};
