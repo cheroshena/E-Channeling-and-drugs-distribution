@@ -34,7 +34,9 @@ const {
     emptyPrescCart,
     createPrescOrder,
     getPrescOrders,
-    updatePrescOrderStatus
+    updatePrescOrderStatus,
+    getAllOrders,
+    getAllChannels
 } = require("../controller/userCtrl");
 const {authMiddleware,isAdmin} = require("../middlewares/authMiddleware");
 
@@ -60,8 +62,10 @@ router.post("/cartprescription/create-prescriptionchannel",authMiddleware,create
 
 router.get("/all-users",getallUser);
 router.get("/get-orders",authMiddleware,getOrders);
+router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
 router.get("/get-prescorders",authMiddleware,getPrescOrders);
 router.get("/get-channels",authMiddleware, getChannelList);
+router.get("/getallchannels", authMiddleware, isAdmin, getAllChannels);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout",logout);
 router.get("/wishlist",authMiddleware, getWishlist);

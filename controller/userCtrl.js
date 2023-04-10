@@ -488,6 +488,16 @@ const getOrders = asyncHandler(async(req, res) => {
     }
 });
 
+//Get all order admin
+const getAllOrders = asyncHandler(async (req, res) => {
+    try {
+        const alluserorders = await Order.find().populate("products.product").populate("orderby").exec();
+        res.json(alluserorders);
+    } catch (error) {
+        throw new Error(error);
+    }
+});
+
 //Update Order 
 const updateOrderStatus = asyncHandler(async(req,res)=>{
     const {status} = req.body;
@@ -627,6 +637,16 @@ const getChannelList = asyncHandler(async(req, res) => {
     }catch (error){
         throw new Error(error);
     }
+});
+
+//Get all order admin
+const getAllChannels = asyncHandler(async (req, res) => {
+    try {
+        const alluserorders = await Channel.find().populate("doctors.doctor").populate("orderby").exec();
+        res.json(alluserorders);
+    } catch (error) {
+        throw new Error(error);
+    }
 });
 
 //Update Channeling Status 
@@ -832,4 +852,6 @@ module.exports = {
     createPrescOrder,
     getPrescOrders,
     updatePrescOrderStatus,
+    getAllOrders,
+    getAllChannels,
 };
