@@ -38,10 +38,6 @@ var blogSchema = new mongoose.Schema({
         ref: "User",
     },
    ],
-   image:{
-    type: String,
-    default:"https://thumbs.dreamstime.com/b/blog-pen-close-up-36615419.jpg",
-   },
    author:{
     type: String,
     default:"Admin",
