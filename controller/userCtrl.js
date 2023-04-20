@@ -349,7 +349,7 @@ const getWishlist = asyncHandler(async (req, res) => {
 
 //User Add to Cart
 const userCart = asyncHandler(async (req, res) => {
-    const { productId,quantity,price } = req.body;
+    const { productId, quantity, price } = req.body;
 
     const { _id } = req.user;
 
@@ -357,7 +357,7 @@ const userCart = asyncHandler(async (req, res) => {
     try {
 
         let newCart = await new Cart({
-            userId:_id,
+            userId: _id,
             productId,
             price,
             quantity
@@ -380,6 +380,21 @@ const getUserCart = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
+
+//remove Product From Cart
+const removeProductFromCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { cartItemId } = req.params;
+    validateMongoDbId(_id);
+    try {
+        const deleteProductFromCart = await Cart.deleteOne({ userId: _id, _id: cartItemId })
+        res.json(deleteProductFromCart);
+    } catch (error) {
+        throw new Error(error);
+    }
+})
+
+//Update 
 
 //Empty Cart
 const emptyCart = asyncHandler(async (req, res) => {
@@ -863,4 +878,5 @@ module.exports = {
     getAllChannels,
     getOrderByUserId,
     getChannelByUserId,
+    removeProductFromCart,
 };

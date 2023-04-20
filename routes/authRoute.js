@@ -38,7 +38,8 @@ const {
     getAllOrders,
     getAllChannels,
     getChannelByUserId,
-    getOrderByUserId
+    getOrderByUserId,
+    removeProductFromCart
 } = require("../controller/userCtrl");
 const {authMiddleware,isAdmin} = require("../middlewares/authMiddleware");
 
@@ -81,6 +82,7 @@ router.get("/:id",authMiddleware,isAdmin,getaUser);
 
 
 router.delete("/empty-cart",authMiddleware,emptyCart);
+router.delete("/delete-product-cart/:cartItemId",authMiddleware, removeProductFromCart);
 router.delete("/empty-channel",authMiddleware,emptyChannel);
 router.delete("/empty-cartprescription",authMiddleware,emptyPrescCart);
 router.delete("/:id",deleteaUser);
