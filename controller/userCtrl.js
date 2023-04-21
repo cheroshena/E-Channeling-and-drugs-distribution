@@ -545,15 +545,15 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
 ///////User Choose doctor for channeling
 const chooseDoc = asyncHandler(async (req, res) => {
-    const { doctorId,quantity } = req.body;
+    const { doctorId, quantity } = req.body;
 
     const { _id } = req.user;
 
     validateMongoDbId(_id);
     try {
-        
+
         let newChodos = await new SelectDoc({
-            userId:_id,
+            userId: _id,
             doctorId,
             quantity
         }).save();
@@ -575,6 +575,19 @@ const getUserSelectDoc = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 });
+
+//remove the select doctors in slect doctor page
+const removeDoctorFromSelectdoc = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    const { selectdocItemId } = req.params;
+    validateMongoDbId(_id);
+    try {
+        const deleteDoctorFromSelectdoc = await SelectDoc.deleteOne({ userId: _id, _id: selectdocItemId })
+        res.json(deleteDoctorFromSelectdoc);
+    } catch (error) {
+        throw new Error(error);
+    }
+})
 
 //Empty Channel
 const emptyChannel = asyncHandler(async (req, res) => {
@@ -876,5 +889,6 @@ module.exports = {
     getOrderByUserId,
     getChannelByUserId,
     removeProductFromCart,
-    updateProductQuantityFromCart
+    updateProductQuantityFromCart,
+    removeDoctorFromSelectdoc,
 };

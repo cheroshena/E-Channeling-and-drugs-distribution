@@ -41,7 +41,8 @@ const {
     getOrderByUserId,
     removeProductFromCart,
     updateProductQuantityFromCart,
-    getUserSelectDoc
+    getUserSelectDoc,
+    removeDoctorFromSelectdoc
 } = require("../controller/userCtrl");
 const {authMiddleware,isAdmin} = require("../middlewares/authMiddleware");
 
@@ -86,7 +87,8 @@ router.get("/:id",authMiddleware,isAdmin,getaUser);
 router.delete("/empty-cart",authMiddleware,emptyCart);
 router.delete("/delete-product-cart/:cartItemId",authMiddleware, removeProductFromCart);
 router.delete("/update-product-cart/:cartItemId/:newQuantiy",authMiddleware, updateProductQuantityFromCart);
-router.delete("/empty-channel",authMiddleware,emptyChannel);
+router.delete("/empty-selectdoc",authMiddleware,emptyChannel);
+router.delete("/delete-doctor-selectdoc/:selectdocItemId",authMiddleware,removeDoctorFromSelectdoc);
 router.delete("/empty-cartprescription",authMiddleware,emptyPrescCart);
 router.delete("/:id",deleteaUser);
 
