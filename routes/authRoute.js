@@ -24,7 +24,7 @@ const {
     getOrders,
     updateOrderStatus,
     chooseDoc,
-    getUserChannel,
+    
     emptyChannel,
     createChannel,
     getChannelList,
@@ -40,7 +40,8 @@ const {
     getChannelByUserId,
     getOrderByUserId,
     removeProductFromCart,
-    updateProductQuantityFromCart
+    updateProductQuantityFromCart,
+    getUserSelectDoc
 } = require("../controller/userCtrl");
 const {authMiddleware,isAdmin} = require("../middlewares/authMiddleware");
 
@@ -58,7 +59,7 @@ router.post("/login",loginUserCtrl);
 router.post("/admin-login",loginAdmin);
 router.post("/cart",authMiddleware,userCart);
 router.post("/cartprescription",authMiddleware,userprescCart);
-router.post("/channel",authMiddleware,chooseDoc);
+router.post("/selectdoc",authMiddleware,chooseDoc);
 router.post("/cart/applycoupon",authMiddleware,applyCoupon);
 router.post("/cart/cash-order",authMiddleware,createOrder)
 router.post("/channel/create-channel",authMiddleware,createChannel)
@@ -77,7 +78,7 @@ router.get("/logout",logout);
 router.get("/wishlist",authMiddleware, getWishlist);
 router.get("/cart",authMiddleware, getUserCart);
 router.get("/cartprescription",authMiddleware, getUserPrescCart);
-router.get("/channel",authMiddleware, getUserChannel);
+router.get("/selectdoc",authMiddleware, getUserSelectDoc);
 router.get("/:id",authMiddleware,isAdmin,getaUser);
 
 

@@ -543,35 +543,19 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
 });
 
-//User Choose doctor for channeling
+///////User Choose doctor for channeling
 const chooseDoc = asyncHandler(async (req, res) => {
-    const { chodos } = req.body;
+    const { doctorId,quantity } = req.body;
 
     const { _id } = req.user;
 
     validateMongoDbId(_id);
     try {
-        let doctors = []
-        const user = await User.findById(_id);
-        //check if user already have product in cart
-        const alreadyExistCart = await SelectDoc.findOne({ orderby: user._id });
-        if (alreadyExistCart) {
-            alreadyExistCart.remove();
-        }
-        for (let i = 0; i < chodos.length; i++) {
-            let object = {};
-            object.doctor = chodos[i]._id;
-            object.count = chodos[i].count;
-
-
-            doctors.push(object);
-        }
-
-
+        
         let newChodos = await new SelectDoc({
-            doctors,
-
-            orderby: user?._id,
+            userId:_id,
+            doctorId,
+            quantity
         }).save();
         res.json(newChodos);
     }
@@ -581,11 +565,11 @@ const chooseDoc = asyncHandler(async (req, res) => {
 });
 
 //Get channel and View 
-const getUserChannel = asyncHandler(async (req, res) => {
+const getUserSelectDoc = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
-        const chodos = await SelectDoc.findOne({ orderby: _id }).populate("doctors.doctor");
+        const chodos = await SelectDoc.find({ userId: _id }).populate("doctorId");
         res.json(chodos);
     } catch (error) {
         throw new Error(error);
@@ -876,7 +860,7 @@ module.exports = {
     getOrders,
     updateOrderStatus,
     chooseDoc,
-    getUserChannel,
+    getUserSelectDoc,
     emptyChannel,
     createChannel,
     getChannelList,
