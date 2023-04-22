@@ -409,7 +409,36 @@ const updateProductQuantityFromCart = asyncHandler(async (req, res) => {
     }
 })
 
-//Empty Cart
+//create order
+const createOrder = asyncHandler(async (req, res) => {
+    const {
+        shippingInfo,
+        orderItems,
+        totalPrice,
+        totalPriceAfterDiscount,
+        paymentInfo
+    } = req.body;
+    const { _id } = req.user;
+    try {
+        const order = await Order.create({
+            shippingInfo,
+            orderItems,
+            totalPrice,
+            totalPriceAfterDiscount,
+            paymentInfo,
+            user: _id
+        })
+        res.json({
+            order,
+            success: true
+        })
+
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+//Empty Cart////////////////////////////////////////////////////////////////////////////
+/* Comment on
 const emptyCart = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
@@ -542,7 +571,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     }
 
 });
-
+*/
 ///////User Choose doctor for channeling
 const chooseDoc = asyncHandler(async (req, res) => {
     const { doctorId, quantity } = req.body;
@@ -589,8 +618,8 @@ const removeDoctorFromSelectdoc = asyncHandler(async (req, res) => {
     }
 })
 
-//Empty Channel
-const emptyChannel = asyncHandler(async (req, res) => {
+///////////////Empty Channel///////////////////////////////////////////////////////
+/*const emptyChannel = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     validateMongoDbId(_id);
     try {
@@ -704,8 +733,8 @@ const updateChannelingStatus = asyncHandler(async (req, res) => {
         throw new Error(error);
     }
 
-});
-
+});*/
+//////////////////////////////////////////////////////////////////////////////////////////
 
 //user add to cart his prescription
 const userprescCart = asyncHandler(async (req, res) => {
@@ -867,28 +896,16 @@ module.exports = {
     saveAddress,
     userCart,
     getUserCart,
-    emptyCart,
-    applyCoupon,
-    createOrder,
-    getOrders,
-    updateOrderStatus,
     chooseDoc,
     getUserSelectDoc,
-    emptyChannel,
-    createChannel,
-    getChannelList,
-    updateChannelingStatus,
     userprescCart,
     getUserPrescCart,
     emptyPrescCart,
     createPrescOrder,
     getPrescOrders,
     updatePrescOrderStatus,
-    getAllOrders,
-    getAllChannels,
-    getOrderByUserId,
-    getChannelByUserId,
     removeProductFromCart,
     updateProductQuantityFromCart,
     removeDoctorFromSelectdoc,
+    createOrder,
 };

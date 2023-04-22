@@ -2,33 +2,54 @@ const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
 var channelSchema = new mongoose.Schema({
-    doctors: [
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    shippingInfo: {
+        name: {
+            type: String,
+            required: true
+        },
+        mobile: {
+            type: String,
+            required: true
+        },
+        nic: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        other: {
+            type: String,
+            required: true
+        },
+
+    },
+    orderItems: [
         {
             doctor: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref:"Doctor",
-        },
-        count:Number,
-        
-        },
+                ref: "Doctor",
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            },
+
+        }
     ],
-    paymentIntent:{},
-    channelNo:{
-        type:String,
-        default:"Not Processed",
-        enum:["Processing","01","02","03","04","05","06","07","08","09","10"],
-    },
-    orderStatus:{
+    orderStatus: {
         type: String,
-        default:"Not Processed",
-        enum:["Processing","Cancelled","Done"],
-    },
-    orderby:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"User",
+        default: "Ordered"
     }
-},{
-    timestamps:true,
+}, {
+    timestamps: true,
 });
 
 //Export the model
