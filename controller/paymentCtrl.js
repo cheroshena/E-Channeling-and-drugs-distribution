@@ -25,7 +25,30 @@ const paymentVerification = async (req, res) => {
     })
 }
 
+const paymentVerificationdoc = async (req, res) => {
+    const { razorpayOrderId, razorpayPaymentId } = req.body
+    res.json({
+        razorpayOrderId, razorpayPaymentId
+    })
+}
+
+const checkoutdoc = async (req, res) => {
+    
+    const option = {
+        amount: 5000,
+        currency: "INR"
+    }
+    const order = await instance.orders.create(option)
+
+    res.json({
+        success: true,
+        order
+    })
+}
+
 module.exports = {
     checkout,
-    paymentVerification
+    paymentVerification,
+    checkoutdoc,
+    paymentVerificationdoc
 }

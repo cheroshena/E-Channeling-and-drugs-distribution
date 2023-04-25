@@ -437,6 +437,35 @@ const createOrder = asyncHandler(async (req, res) => {
         throw new Error(error)
     }
 })
+
+//create Channel
+const createChannel = asyncHandler(async (req, res) => {
+    const {
+        shippingInfo,
+        orderItems,
+        totalPrice,
+        totalPriceAfterDiscount,
+        paymentInfo
+    } = req.body;
+    const { _id } = req.user;
+    try {
+        const channel = await Channel.create({
+            shippingInfo,
+            orderItems,
+            totalPrice,
+            totalPriceAfterDiscount,
+            paymentInfo,
+            user: _id
+        })
+        res.json({
+            channel,
+            success: true
+        })
+
+    } catch (error) {
+        throw new Error(error)
+    }
+})
 //Empty Cart////////////////////////////////////////////////////////////////////////////
 /* Comment on
 const emptyCart = asyncHandler(async (req, res) => {
@@ -908,4 +937,5 @@ module.exports = {
     updateProductQuantityFromCart,
     removeDoctorFromSelectdoc,
     createOrder,
+    createChannel,
 };

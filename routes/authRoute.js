@@ -42,9 +42,10 @@ const {
     removeProductFromCart,
     updateProductQuantityFromCart,
     getUserSelectDoc,
-    removeDoctorFromSelectdoc
+    removeDoctorFromSelectdoc,
+    createChannel
 } = require("../controller/userCtrl");
-const { checkout, paymentVerification } = require("../controller/paymentCtrl");
+const { checkout, paymentVerification, checkoutdoc, paymentVerificationdoc } = require("../controller/paymentCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
 
@@ -62,11 +63,14 @@ router.post("/login", loginUserCtrl);
 router.post("/admin-login", loginAdmin);
 router.post("/cart", authMiddleware, userCart);
 router.post("/order/checkout", authMiddleware, checkout);
+router.post("/channel/checkoutdoc", authMiddleware, checkoutdoc);
 router.post("/order/paymentVerification",authMiddleware,paymentVerification);
+router.post("/channel/paymentVerification",authMiddleware,paymentVerificationdoc);
 router.post("/cartprescription", authMiddleware, userprescCart);
 router.post("/selectdoc", authMiddleware, chooseDoc);
 //router.post("/cart/applycoupon",authMiddleware,applyCoupon);//
 router.post("/cart/create-order", authMiddleware, createOrder)
+router.post("/channel/create-channel", authMiddleware, createChannel);
 //router.post("/channel/create-channel",authMiddleware,createChannel)
 router.post("/cartprescription/create-prescriptionchannel", authMiddleware, createPrescOrder)
 

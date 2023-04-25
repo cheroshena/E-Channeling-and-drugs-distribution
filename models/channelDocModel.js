@@ -30,6 +30,16 @@ var channelSchema = new mongoose.Schema({
         },
 
     },
+    paymentInfo: {
+        razorpayOrderId: {
+            type: String,
+            required: true
+        },
+        razorpayPaymentId: {
+            type: String,
+            required: true
+        },
+    },
     orderItems: [
         {
             doctor: {
@@ -44,9 +54,21 @@ var channelSchema = new mongoose.Schema({
 
         }
     ],
+    paidAt: {
+        type: Date,
+        default: Date.now()
+    },
+    totalPrice: {
+        type: Number,
+        default: "250"
+    },
+    totalPriceAfterDiscount: {
+        type: Number,
+        default: "250"
+    },
     orderStatus: {
         type: String,
-        default: "Ordered"
+        default: "Pending..."
     }
 }, {
     timestamps: true,
