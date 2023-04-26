@@ -466,6 +466,33 @@ const createChannel = asyncHandler(async (req, res) => {
         throw new Error(error)
     }
 })
+
+//get own order list
+const getMyOrders = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    try {
+        const orders = await Order.find({ user: _id }).populate("user").populate("orderItems.product")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+//get own Channel list
+const getMyChannels = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    try {
+        const orders = await Channel.find({ user: _id }).populate("user").populate("orderItems.doctor")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
 //Empty Cart////////////////////////////////////////////////////////////////////////////
 /* Comment on
 const emptyCart = asyncHandler(async (req, res) => {
@@ -938,4 +965,6 @@ module.exports = {
     removeDoctorFromSelectdoc,
     createOrder,
     createChannel,
+    getMyOrders,
+    getMyChannels,
 };

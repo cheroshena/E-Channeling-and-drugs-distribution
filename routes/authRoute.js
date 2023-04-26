@@ -43,7 +43,9 @@ const {
     updateProductQuantityFromCart,
     getUserSelectDoc,
     removeDoctorFromSelectdoc,
-    createChannel
+    createChannel,
+    getMyOrders,
+    getMyChannels
 } = require("../controller/userCtrl");
 const { checkout, paymentVerification, checkoutdoc, paymentVerificationdoc } = require("../controller/paymentCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -75,7 +77,8 @@ router.post("/channel/create-channel", authMiddleware, createChannel);
 router.post("/cartprescription/create-prescriptionchannel", authMiddleware, createPrescOrder)
 
 router.get("/all-users", getallUser);
-//router.get("/get-orders",authMiddleware,getOrders);
+router.get("/getmyorders",authMiddleware,getMyOrders);
+router.get("/getmychannels",authMiddleware,getMyChannels);
 //router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
 //router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
 router.get("/get-prescorders", authMiddleware, getPrescOrders);
