@@ -493,6 +493,75 @@ const getMyChannels = asyncHandler(async (req, res) => {
     }
 })
 
+//Graph Chart Order income
+const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
+    let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let d = new Date();
+    let endDate = "";
+    d.setDate(1)
+    for (let index = 0; index < 11; index++) {
+        d.setMonth(d.getMonth() - 1)
+        endDate = monthNames[d.getMonth()] + " " + d.getFullYear()
+
+
+    }
+    const data = await Order.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $lte: new Date(),
+                    $gte: new Date(endDate)
+                }
+            }
+        }, {
+            $group: {
+                _id: {
+                    month: "$month"
+                }, amount: { $sum: "$totalPriceAfterDiscount" },count: { $sum: 1 }
+
+            }
+        }
+    ])
+    res.json(data)
+})
+
+
+
+
+
+//Total Orders in year 
+const getYearlyTotalOrders = asyncHandler(async (req, res) => {
+    let monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    let d = new Date();
+    let endDate = "";
+    d.setDate(1)
+    for (let index = 0; index < 11; index++) {
+        d.setMonth(d.getMonth() - 1)
+        endDate = monthNames[d.getMonth()] + " " + d.getFullYear()
+
+
+    }
+    const data = await Order.aggregate([
+        {
+            $match: {
+                createdAt: {
+                    $lte: new Date(),
+                    $gte: new Date(endDate)
+                }
+            }
+        }, {
+            $group: {
+                _id: null, 
+                count: { $sum: 1 },
+                amount:{$sum: "$totalPriceAfterDiscount"}
+
+            }
+        }
+    ])
+    res.json(data)
+})
+
+
 //Empty Cart////////////////////////////////////////////////////////////////////////////
 /* Comment on
 const emptyCart = asyncHandler(async (req, res) => {
@@ -967,4 +1036,7 @@ module.exports = {
     createChannel,
     getMyOrders,
     getMyChannels,
+    getMonthWiseOrderIncome,
+ 
+    getYearlyTotalOrders,
 };

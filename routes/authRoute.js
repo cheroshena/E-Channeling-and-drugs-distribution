@@ -45,7 +45,10 @@ const {
     removeDoctorFromSelectdoc,
     createChannel,
     getMyOrders,
-    getMyChannels
+    getMyChannels,
+    getMonthWiseOrderIncome,
+
+    getYearlyTotalOrders
 } = require("../controller/userCtrl");
 const { checkout, paymentVerification, checkoutdoc, paymentVerificationdoc } = require("../controller/paymentCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -79,6 +82,9 @@ router.post("/cartprescription/create-prescriptionchannel", authMiddleware, crea
 router.get("/all-users", getallUser);
 router.get("/getmyorders",authMiddleware,getMyOrders);
 router.get("/getmychannels",authMiddleware,getMyChannels);
+router.get("/getMonthWiseOrderIncome", authMiddleware, getMonthWiseOrderIncome);
+
+router.get("/getyearlyorders", authMiddleware, getYearlyTotalOrders);
 //router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
 //router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
 router.get("/get-prescorders", authMiddleware, getPrescOrders);
@@ -92,6 +98,7 @@ router.get("/cart", authMiddleware, getUserCart);
 router.get("/cartprescription", authMiddleware, getUserPrescCart);
 router.get("/selectdoc", authMiddleware, getUserSelectDoc);
 router.get("/:id", authMiddleware, isAdmin, getaUser);
+
 
 
 
