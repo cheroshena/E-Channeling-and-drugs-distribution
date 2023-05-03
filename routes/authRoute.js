@@ -35,8 +35,8 @@ const {
     createPrescOrder,
     getPrescOrders,
     updatePrescOrderStatus,
-    //getAllOrders,
-    //getAllChannels,
+    getAllOrders,
+    getAllChannels,
     //getChannelByUserId,
     //getOrderByUserId,
     removeProductFromCart,
@@ -85,11 +85,11 @@ router.get("/getmychannels",authMiddleware,getMyChannels);
 router.get("/getMonthWiseOrderIncome", authMiddleware, getMonthWiseOrderIncome);
 
 router.get("/getyearlyorders", authMiddleware, getYearlyTotalOrders);
-//router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
+router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
 //router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
 router.get("/get-prescorders", authMiddleware, getPrescOrders);
 //router.get("/get-channels",authMiddleware, getChannelList);
-//router.get("/getallchannels", authMiddleware, isAdmin, getAllChannels);
+router.get("/getallchannels", authMiddleware, isAdmin, getAllChannels);
 //router.post("/getchannelbyuser/:id", authMiddleware, isAdmin, getChannelByUserId);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);

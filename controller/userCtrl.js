@@ -480,11 +480,37 @@ const getMyOrders = asyncHandler(async (req, res) => {
     }
 })
 
+//get own order list
+const getAllOrders = asyncHandler(async (req, res) => {
+    
+    try {
+        const orders = await Order.find().populate("user")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
 //get own Channel list
 const getMyChannels = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     try {
         const orders = await Channel.find({ user: _id }).populate("user").populate("orderItems.doctor")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+//get own Channel list
+const getAllChannels = asyncHandler(async (req, res) => {
+    const { _id } = req.user;
+    try {
+        const orders = await Channel.find()
         res.json({
             orders
         })
@@ -1037,6 +1063,7 @@ module.exports = {
     getMyOrders,
     getMyChannels,
     getMonthWiseOrderIncome,
- 
     getYearlyTotalOrders,
+    getAllOrders,
+    getAllChannels,
 };
