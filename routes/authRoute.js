@@ -48,7 +48,11 @@ const {
     getMyChannels,
     getMonthWiseOrderIncome,
 
-    getYearlyTotalOrders
+    getYearlyTotalOrders,
+    getSingleOrders,
+    getSingleChannels,
+    updateOrder,
+    updateChannel
 } = require("../controller/userCtrl");
 const { checkout, paymentVerification, checkoutdoc, paymentVerificationdoc } = require("../controller/paymentCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -86,10 +90,14 @@ router.get("/getMonthWiseOrderIncome", authMiddleware, getMonthWiseOrderIncome);
 
 router.get("/getyearlyorders", authMiddleware, getYearlyTotalOrders);
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
+router.get("/getaOrder/:id", authMiddleware, isAdmin, getSingleOrders);
+router.put("/updateOrder/:id", authMiddleware, isAdmin, updateOrder);
 //router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getOrderByUserId);
 router.get("/get-prescorders", authMiddleware, getPrescOrders);
 //router.get("/get-channels",authMiddleware, getChannelList);
 router.get("/getallchannels", authMiddleware, isAdmin, getAllChannels);
+router.get("/getaChannel/:id", authMiddleware, isAdmin, getSingleChannels);
+router.put("/updateChannel/:id", authMiddleware, isAdmin, updateChannel);
 //router.post("/getchannelbyuser/:id", authMiddleware, isAdmin, getChannelByUserId);
 router.get("/refresh", handleRefreshToken);
 router.get("/logout", logout);

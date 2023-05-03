@@ -482,7 +482,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
 //get own order list
 const getAllOrders = asyncHandler(async (req, res) => {
-    
+
     try {
         const orders = await Order.find().populate("user")
         res.json({
@@ -492,6 +492,63 @@ const getAllOrders = asyncHandler(async (req, res) => {
         throw new Error(error)
     }
 })
+
+//get single order
+const getSingleOrders = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    try {
+        const orders = await Order.findOne({ _id: id }).populate("orderItems.product")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+//Update status in single order
+const updateOrder = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    try {
+        const orders = await Order.findById(id)
+        orders.orderStatus=req.body.status;
+        await orders.save()
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+//update channel status
+const updateChannel = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    try {
+        const orders = await Channel.findById(id)
+        orders.orderStatus=req.body.status;
+        await orders.save()
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
+//get single Channel
+const getSingleChannels = asyncHandler(async (req, res) => {
+    const { id } = req.params
+    try {
+        const orders = await Channel.findOne({ _id: id }).populate("orderItems.doctor")
+        res.json({
+            orders
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+})
+
 
 //get own Channel list
 const getMyChannels = asyncHandler(async (req, res) => {
@@ -510,7 +567,7 @@ const getMyChannels = asyncHandler(async (req, res) => {
 const getAllChannels = asyncHandler(async (req, res) => {
     const { _id } = req.user;
     try {
-        const orders = await Channel.find()
+        const orders = await Channel.find().populate("user")
         res.json({
             orders
         })
@@ -543,7 +600,7 @@ const getMonthWiseOrderIncome = asyncHandler(async (req, res) => {
             $group: {
                 _id: {
                     month: "$month"
-                }, amount: { $sum: "$totalPriceAfterDiscount" },count: { $sum: 1 }
+                }, amount: { $sum: "$totalPriceAfterDiscount" }, count: { $sum: 1 }
 
             }
         }
@@ -577,9 +634,9 @@ const getYearlyTotalOrders = asyncHandler(async (req, res) => {
             }
         }, {
             $group: {
-                _id: null, 
+                _id: null,
                 count: { $sum: 1 },
-                amount:{$sum: "$totalPriceAfterDiscount"}
+                amount: { $sum: "$totalPriceAfterDiscount" }
 
             }
         }
@@ -1066,4 +1123,8 @@ module.exports = {
     getYearlyTotalOrders,
     getAllOrders,
     getAllChannels,
+    getSingleOrders,
+    getSingleChannels,
+    updateOrder,
+    updateChannel,
 };
