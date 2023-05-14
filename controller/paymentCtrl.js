@@ -35,7 +35,7 @@ const paymentVerificationdoc = async (req, res) => {
 const checkoutdoc = async (req, res) => {
     
     const option = {
-        amount: 5000,
+        amount: 500*100,
         currency: "INR"
     }
     const order = await instance.orders.create(option)
